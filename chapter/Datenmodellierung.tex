@@ -1,0 +1,80 @@
+%!TEX root = ../Thesis.tex
+\section{Datenmodellierung}
+Im Sinne der Modularität basiert die Datenmodellierung auf dem Entity-Value-Attribut-Konzept (EAV). Dieses Konzept ermöglicht die Erweiterung 
+des starren relationalen Schema um eine variable Anzahl benutzerdefinierter Attribute, ohne dabei eine Schema-Veränderung zu erfordern. Dadurch 
+sind die dynamischen Attribute von den Domänenobjekten (Projekte und Formulationen) getrennt. Im Folgenden soll der Aufbau und die Funktionsweise
+des Datenmodells genauer erläutert werden.
+\subsection{ER-Modell und Tabellenübersicht}
+Das relationale Schema gliedert sich in 3 Hauptblöcke: Domänentabellen, Attributdefinition und der Werteebene. 
+\subsubsection{Domänentabellen}
+\enquote{Newport\_Project} verbindet die Datenbank über den Primärschlüssel \enquote{ProjectID} mit der Newport-Datenbank aus dem CropScience Warehouse (CSW). 
+Das ermöglicht indirekten Zugriff auf externe Projektdaten. \enquote{Newport\_Segments} beinhaltet sogenannte Segmente\footnote{Segmente sind in der Enwticklung einer Formulation beispielsweise verschiedene Länder, in denen das Produkt lizensiert werden soll} 
+für die jeweiligen Newport-Projekte, und (sofern gegeben) deren Attribute. \enquote{Formulation} und \enquote{Formulation\_Segments} fungieren entsprechend für 
+zu speichernde Formulationen.
+\subsubsection{Attributdefinition}
+\enquote{Attribute} enthält alle potentiell verwendbaren, dynamischen Felder. Jede Zeile verfügt über eine eindeutige \enquote{AttributeID}, einen entsprechenden \enquote{AttributeTitle},
+und sowohl eine direkte (\enquote{ReferenceType}), als auch eine indirekte Referenz(\enquote{ReferenceID}) auf den Attribut-Owner. Mit der \enquote{SpecID} wird zusätzlich
+auf eine Tabelle verwiesen, in der genauere Informationen über das Attribut (bspw. Einheit) hinterlegt werden können.
+\subsubsection{Werteebene}
+\enquote{Value} speichert die benutzerdefinierten Werte, mit denen das Attribut angelegt wurde. Wesentliche Spalten sind \enquote{ValueID}, der Primärschlüssel, \enquote{AttributeID},
+die Referenz auf das zugehörige Attribut, \enquote{Description} für eine mögliche genauere Beschreibung und \enquote{Value}, worin der eigentliche Wert gespeichert wird.
+\subsection{Beziehungen und Referentialität}
+Ein Domänenobjekt kann über die AttributeID mit beliebig vielen Attributen verbunden werden. Ein Attribut kann widerum nur einem Domänenobjekt zugewiesen werden. 
+Die referentielle Integrität wird durch die Fremdschlüssel-Paarungen sichergestellt, wonach kein Attribut ohne Verweis auf ein Domänenobjekt erstellt werden kann. 
+Die API ist hingegen dafür zuständig, dass ein Attribut nicht auf mehrere verschiedene Domänenobjekte verweist, indem es benutzerdefiniertes Setzen der AttributeID verhindert.
+\subsection{Datenkonsistenz und Validierung}
+Das EAV-Modell sieht vor, dass die Datenintegrität durch die mit der Datenbank verbundene API sichergestellt wird, indem eingegebene Werte stets auf Validität geprüft werden.
+Folgende Prüfungen sind für die API vorgesehen:
+\subsubsection{Datentypprüfung}
+Jedes Attribut hat in der Specification einen hinterlegten Datentyp. Sollte der vom Benutzer angegebene Datentyp nicht in der Menge unterstützter Datentypen vorhanden sein,
+soll die Erstellung des Attributs verhindert werden und eine entsprechende Fehlermeldung ausgegeben.
+\subsubsection{Pflichtfelder und Standardwerte}
+Um eine reibungslose Behandlung fehlerhafter Nutzerangaben sicherzustellen, soll schon das Front-End Pflichtfelder als solche markieren, und das Abschicken der Form verhindern,
+bis diese ausgefüllt sind. Das Setzen der Schlüssel übernimmt jedoch das Backend, weshalb diese, obwohl sie Pflichtfelder sind, nicht vom Nutzer gesetzt werden müssen.
+\subsubsection{Transaktionen}
+Das Anlegen eines neuen Attributs und das direkte Zuweisen eines ersten Werts sollen in einer Transaktion gebündelt sein, um zu verhindern, dass Attribute ohen zugehörige Werte 
+existieren.
+\subsection{Beispielhafte Speicherung}
+Angenommen, ein Nutzer legt für \enquote{Projekt A} ein neues Attribut \enquote{Versuchsdauer} (Einheit Integer) an und vergibt den Wert \enquote{3},
+dann sähen die Abläufe und Datenbankeinträge folgendermaßen aus:
+\begin{table}[h]
+    \centering
+    \caption{Attributdefinition}
+    \label{tab:attribute}
+    \begin{tabular}{@{}cccc@{}}
+        \toprule
+        \textbf{AttributeID} & \textbf{AttributeTitle} & \textbf{ReferenceType} & \textbf{SpecID} \\ 
+        \midrule
+        42 & Versuchsdauer & Newport\_Project & 2 \\ 
+        \bottomrule
+    \end{tabular}
+\end{table}
+\begin{table}[h]
+    \centering
+    \caption{Specification (Einheitenzuordnung)}
+    \label{tab:specification}
+    \begin{tabular}{@{}cc@{}}
+        \toprule
+        \textbf{SpecID} & \textbf{Unit} \\ 
+        \midrule
+        2 & Integer \\ 
+        \bottomrule
+    \end{tabular}
+\end{table}
+\begin{table}[h]
+    \centering
+    \caption{Speicherung eines Attribut-Wert-Paares}
+    \label{tab:value}
+    \begin{tabular}{@{}ccccc@{}}
+        \toprule
+        \textbf{ValueID} & \textbf{AttributeID} & \textbf{Description} & \textbf{Value} \\ 
+        \midrule
+        101 & 42 & null & 3 \\ 
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+Durch diese Trennung bleiben das feste Schema in \enquote{Newport\_Project} und die dynamischen Erweiterungen 
+klar voneinander getrennt, und trotzdem werden alle zusätzlichen relevanten Informationen abgespeichert.
+
+Mit diesem Datenmodell können beliebig viele neue Attribute hinzugefügt werden, ohne das Grundschema der Domänentabelle anzupassen.

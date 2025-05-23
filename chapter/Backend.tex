@@ -1,0 +1,203 @@
+%!TEX root = ../Thesis.tex
+\section{Bakend-Implementierung}
+Im Backend übernimmt eine mit Node.js implementierte API die Geschäftslogik. Da die Daten in AWS hinter einer Firewall liegen,
+sitzt die API in einer EC2-Instanz, die eine Schnittstelle zwischen der gesicherten AWS-Landschaft und externen Apps bildet. 
+Zustäzlich wird API Gateway, ein AWS-Serice verwendet, um den automatisierten Zugriff auf die API zu ermöglichen. Gespeichert sind 
+die Daten in einer Aurora PostgreSQL Datenbank. 
+\subsection{Datenbank}
+Zur Implementierung der Datenbank auf der EC2-Instanz muss zuerst eine Verbindung mit derlokalen Datenbankmanagement-System aufgebaut werden.
+Dafür wird die AWS-CLI verwendet.\footnote{https://aws.amazon.com/cli/} Mit ihr wird dann\footnote{Nach Authentifizierung mit aws login --\{user\}} 
+ein Tunnel zwischen dem lokalen Port 2222\footnote{Der Port ist frei wählbar, solange er nicht reserviert ist (bspw. 22 ist nicht wählbar, da belegt durch TCP)} und
+dem TCP-Port 22 der EC2-Instanz geöffnet:
+\begin{figure}[bht]
+    \begin{lstlisting}[caption=SSH-Tunnel mit AWS-CLI, label=list:tunnel]
+        aws  --profile {Profile-ID} ec2-instance-connect open-tunnel --instance-id {Instance ID} --remote-port 22 --local-port 2222 --region eu-central-1
+    \end{lstlisting}
+    %\footnoterule{}
+    %\footnotesize{Casts have been omitted for the sake of readability}
+\end{figure}
+Dieser Tunnel ist zwingend erforderlich, da aufgrund von Sicherheitsrichtlinien Bayer's die EC2-Instanz keine öffentliche IP haben darf.\\
+In PgAdmin kann nun eine Verbindung zu der Datenbank hergestellt werden. Dafür werden folgende Informationen benötigt:
+\begin{compactenum}
+	\item Host name/Adresse: Die URL der Datenbank auf AWS-Ebene (name.id.server.rds.amazonaws.com)
+	\item Port: 5432 (Standard Postgres-Port)
+	\item Maintenaince Database: Name der Datenbank auf AWS
+	\item UserName: Name des Nutzers, mit dem auf die Datenbank zugegriffen werden soll
+	\item Parameter \enquote{SSL Mode}: \enquote{prefer}
+	\item Use SSH Tunneling: \enquote{enabled}
+	\item Tunnel Host: localhost (da der SSH-Tunnel auf dem localhost aufgesetzt ist)
+	\item Tunnel Port: 2222 (entspricht --local-port in der CLI)
+	\item Authentication: \enquote{Identity File}
+	\item Identity File: Hier das .pem-File hinterlegen\footnote{Key-Files können im AWS-Dashboard unter EC2 erstellt werden}
+\end{compactenum}
+
+Mit diesen Einstellungen kann der Server gespeichert werden, und ein Zugriff auf die Datenbank ist möglich. In PgAdmin kann nun wie üblich das 
+geplante Schema umgesetzt werden. Nun müssen die Daten in React abrufbar gemacht werden.
+
+\subsection{API}
+Für die API muss zuerst eine Infrastruktur in AWS errichtet werden, die eine sichere Verbindung zwischen AWS-Externen Clients und den AWS-Internen
+Daten garantieren kann. Diese Infrastruktur sieht folgendermaßen aus:
+(Hier bild)
+An erster Stelle steht die Virtual Private Cloud (VPC). Auf ihr liegt die gesamte Infrastruktur. Inbound und Outbound traffic aller IP-Adressen sind vollständig
+blockiert, um die Sicherheit der Daten zu gewährleisten. Auf dieser VPC liegt die Datenbank, auf welche Zugriff durch eine EC2-Instanz ermöglicht wird. 
+Die Datenbank ist eine Aurora Postgres Datenbank in Standardausführung\footnote{Standardausführung festgelegt durch den Unternehmensinternen Softwarekatalog}. Die EC2-Instanz
+entspricht ebenfalls der Standardausführung, und ist so eingerichtet, dass Inbound-traffic auf TCP-Ebene ausgehend von AWS-Internen IP-Adressen möglich ist.
+Zusätzlich ist die EC2-Instanz mit einem Network Load Balancer (NLB) ausgestattet, wodurch andere AWS-Programme direkt auf Elemente innerhalb der VPC zugreifen können. Dieser Zugriff ist
+durch eine Target Group möglich, über den ein NLB standardmäßig verfügt, und welcher in diesem Fall direkt auf das VPC zeigt. 
+In einem NodeJS-Programm, welches direkt auf der EC2-Instanz liegt, wird eine Proxy errichtet, mit der eine Verbindung nach außen hergestellt wird:
+\begin{figure}[bht]
+    \begin{lstlisting}[caption=EC2-Proxy in NodeJS, label=list:proxy]
+        // Load .env at startup
+		require('dotenv').config();
+
+		const express = require('express');
+		const morgan = require('morgan');
+		const { Pool } = require('pg');
+
+		// Sanitize and trim environment variables
+		const dbUser = process.env.DATABASE_USER?.trim();
+		const dbPass = process.env.DATABASE_PASSWORD?.trim();
+		const dbHost = process.env.DATABASE_HOST?.trim();
+		const dbPort = Number(process.env.DATABASE_PORT);
+		const dbName = process.env.DATABASE_NAME?.trim();
+
+		console.log('Starting DB proxy service');
+		console.log('CWD:', process.cwd());
+		console.log('Database config:', { host: dbHost, port: dbPort, user: dbUser, database: dbName });
+
+		// Set up Express
+		const app = express();
+
+		// 1. Morgan for HTTP logging
+		app.use(morgan(':method :url :status :res[content-length] - :response-time ms'));
+
+		// 2. JSON body parsing
+		app.use(express.json());
+
+		// 3. Sanity dump for POST bodies
+		app.use((req, res, next) => {
+		if (['POST','PUT','PATCH'].includes(req.method)) console.log('> BODY:', req.body);
+		next();
+		});
+
+		// 4. Postgres pool using sanitized env
+		const pool = new Pool({
+		host: dbHost,
+		port: dbPort,
+		user: dbUser,
+		password: dbPass,
+		database: dbName, 
+		ssl: { rejectUnauthorized: false }
+		});
+
+		// Async wrapper helper
+		defaultWrapAsync = fn => (req, res, next) => fn(req, res, next).catch(next);
+
+		// 5. Health endpoint
+		defaultWrapAsync(async (req, res) => {
+		await pool.query('SELECT 1');
+		res.sendStatus(200);
+		});
+		app.get('/health', defaultWrapAsync(async (req, res) => res.sendStatus(200)));
+
+		// 6. Query endpoint
+		app.post('/query', defaultWrapAsync(async (req, res) => {
+		const { text, params } = req.body;
+		const { rows } = await pool.query(text, params);
+		res.json(rows);
+		}));
+
+		// 7. 404 catch-all
+		app.use((req, res) => res.sendStatus(404));
+
+		// 8. Error handler
+		app.use((err, req, res, next) => {
+		console.error(err.stack || err);
+		if (!res.headersSent) res.status(err.status || 500).json({ error: err.message });
+		});
+
+		// 9. Unhandled promise rejections & exceptions
+		process.on('unhandledRejection', (reason, p) => console.error('Unhandled Rejection:', reason));
+		process.on('uncaughtException', err => console.error('Uncaught Exception:', err));
+
+		// 10. Start server
+		const PORT = process.env.PORT || 8080;
+		app.listen(PORT, '0.0.0.0', () => console.log(`Proxy listening on 0.0.0.0:${PORT}`));
+
+    \end{lstlisting}
+    %\footnoterule{}
+    %\footnotesize{Casts have been omitted for the sake of readability}
+\end{figure}
+In diesem Code-Snippet wird die Proxy auf den Localhost gerichtet, in der Produktivumgebung zeigt die Proxy auf die URL der Umgebung. 
+Die über die Proxy weitergeleiteten Requests werden von API Gateway verarbeitet, auf welchem die oben formulierten Methoden umgesetzt sind. 
+Jede Methode entspricht einer Lambda-Funktion, über welche die Interaktion mit der Datenbank ermöglicht wird:
+\begin{figure}[bht]
+    \begin{lstlisting}[caption=Lambda-Funktion für die API, label=list:lambdaapi]
+		import { Pool } from 'pg';
+
+// Create a pool as a singleton so Lambda can reuse TCP connections
+const pool = new Pool({
+  host:       process.env.DB_HOST,
+  database:   process.env.DB_NAME,
+  user:       process.env.DB_USER,
+  password:   process.env.DB_PASSWORD,
+  port:       process.env.DB_PORT,
+  // If you need SSL, uncomment and adjust:
+  // ssl: { rejectUnauthorized: false }
+});
+
+export const handler = async (event) => {
+  const projectId = event.pathParameters?.projectId;
+  if (!projectId) {
+    return { statusCode: 400, body: 'Missing projectId path parameter' };
+  }
+
+  let client;
+  try {
+    client = await pool.connect();
+
+    const result = await client.query(
+      `SELECT "ProjectID", "AttributeID" 
+         FROM public."Newport_Project" 
+        WHERE "ProjectID" = $1`,
+      [projectId]
+    );
+
+    if (result.rows.length === 0) {
+      return { statusCode: 404, body: 'Project not found' };
+    }
+
+    return {
+      statusCode: 200,
+      headers: { 'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': 'http://localhost:3000',
+      'Access-Control-Allow-Credentials': true,         
+      // if you need cookies
+      // add any other headers your client uses:
+      'Access-Control-Allow-Headers': 'Authorization,Content-Type',},
+      body: JSON.stringify(result.rows[0])
+    };
+
+  } catch (err) {
+    console.error('DB error', err);
+    return {
+      statusCode: 500,
+      body: 'Internal server error'
+    };
+
+  } finally {
+    client?.release();
+  }
+};
+
+	\end{lstlisting}
+    %\footnoterule{}
+    %\footnotesize{Casts have been omitted for the sake of readability}
+\end{figure}
+Zuerst wird in Form der Kontextvariable \enquote{pool} der Gesamtkontext (alle Informationen zu) der Datenbank gespeichert. Mit diesen Informationen 
+wird dann eine Query auf der Datenbank ausgeführt, und das Ergebnis zurückgesendet. Die Lambda-Funktionen sind in API Gateway einer eigenen URL zugeordnet,
+die über die Proxy auch außerhalb von AWS bei gegebener Authentifizierung abrufbar ist. Diese wird durch Cognito abgewickelt.
+\subsection{Authentifizierung mit Cognito}
+In Cognito liegt, speziell für die Authentifizierung von Nutzern für dieses Projekt, ein User-Pool. Dieser hat eine eigene Domain, in der hinterlegte Nutzer 
+ihre Credentials angeben können. Werden die Credentials bestätigt, stellt Cognito ein Auth-Token zur Verfügung, mit welchem dann der Zugriff auf die API möglich ist.
+Im Frontend wird mit einem Login-Button ein Link zu der Cognito-Auth-Seite hergestellt, der den User nach erfolgreichem Login automatisch zurücklenkt. 
