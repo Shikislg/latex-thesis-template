@@ -1,2 +1,37 @@
 %!TEX root = ../Thesis.tex
 \section{Evaluierung}
+Im Folgenden soll die Anwendung auf Basis der zuvor definierten Ziele evaluiert werden. Dabei soll zuerst die Einhaltung der funktionalen,
+und daraufhin die der nicht-funktionalen Ziele bewertet werden.\footnote{Ich arbeite momentan an einer ordentlichen wissenschaftlichen Evaluierung mit KPIs, das hier ist nur eine erste grobe Einschätzung.}
+\subsection{Funktionale Zielerreichung}
+Die funktionale Zielerreichung ist anhand der Erfüllung der Must-Have-Anforderungen zu bewerten. Diese sind in der folgenden Tabelle zusammengefasst:
+\begin{table}[H]
+    \centering
+    \caption{Funktionale Zielerreichung}
+    \label{tab:funktionaleZielerreichung}
+    \begin{tabular}{|p{0.2\textwidth}|p{0.6\textwidth}|p{0.1\textwidth}|}
+        \hline
+        \textbf{Anforderung} & \textbf{Beschreibung} & \textbf{Erfüllt} \\ \hline
+        Anlegen neuer dynamischer Attribute & Nutzer*innen können neue Attribute anlegen, die einem Projektelement zugewiesen werden können. & Ja \\ \hline
+        Zuweisung von Attributen zu konkreten Einträgen & Bereits definierte Attribute können spezifischen Datenbankeinträgen zugeordnet und mit Werten befüllt werden. & Ja \\ \hline
+        Anzeige und Bearbeitung vorhandener Attribut-Werte & Alle zugewiesenen Attribute mitsamt ihren Werten für ein Projektelement werden angezeigt und sind editierbar. & Ja \\ \hline
+        Löschung von Attribut-Zuweisungen & Bestehende Attribut-Wert-Paare können entfernt werden, ohne das globale Attribut zu löschen. & Ja \\ \hline
+        Benutzerführung und Eingabeunterstützung & Die Oberfläche bietet verständliche Beschriftungen, Platzhaltertexte und Tooltips zur Unterstützung der Nutzer. & Ja \\ \hline
+    \end{tabular}
+\end{table}
+Von einem funktionalen Standpunkt sind die Ziele vollständig erreicht. Alle definierten Must-Have-Anforderungen sind implementiert und funktionieren wie vorgesehen.
+\subsection{Nicht-funktionale Zielerreichung}
+Die nicht-funktionale Zielerreichung ist anhand der Response-Time und der Zukunftstauglichkeit der Anwendung zu bewerten. Diese sind in der folgenden Tabelle zusammengefasst:
+\begin{table}[H]
+    \centering
+    \caption{Nicht-funktionale Zielerreichung}
+    \label{tab:nichtfunktionaleZielerreichung}
+    \begin{tabular}{|p{0.2\textwidth}|p{0.6\textwidth}|p{0.1\textwidth}|}
+        \hline
+        \textbf{Anforderung} & \textbf{Beschreibung} & \textbf{Erfüllt} \\ \hline
+        Performance & Ladezeit für die Anzeige eines Projektelements inklusive dynamischer Felder liegt unter 2000 ms. & Ja \\ \hline
+        Skalierbarkeit & Die Lösung ist so ausgelegt, dass sie mit wachsender Datenmenge und Nutzerzahl ohne grundlegende Umstrukturierung betrieben werden kann. & Ja \\ \hline
+        Datenintegrität und Validierung & Alle Eingaben werden auf Plausibilität und Formatkonformität geprüft, um konsistente Daten zu gewährleisten. & Ja \\ \hline
+        Wartbarkeit & Der Quellcode ist modular strukturiert und dokumentiert, um zukünftige Weiterentwicklungen zu erleichtern. & Ja \\ \hline
+    \end{tabular}
+\end{table}
+Die nicht-funktionalen Ziele sind ebenfalls vollständig erreicht. Die Anwendung reagiert schnell und ist so aufgebaut, dass sie auch bei wachsender Nutzerzahl und Datenmenge performant bleibt. Die Datenintegrität wird durch Validierungen sichergestellt, und der Quellcode ist modular und gut dokumentiert.

@@ -1,8 +1,9 @@
 %!TEX root = ../Thesis.tex
-\section{Anforderungen und Zieldefinition}
+\section{Anforderungen und Abgrenzung}
 Die Anforderungen dieses Projekts gehen auf konkrete Bedürfnisse einer Nutzergruppe zurück, 
-die im Arbeitsalltag intensiv mit dem System „Newport“ arbeitet. 
+die im Arbeitsalltag intensiv mit dem System „Newport“ arbeitet. Aus diesen Bedürfnissen ergibt sich das zentrale Ziel dieser Arbeit.
 
+\subsection{Zielsetzung}
 Im Rahmen dieser Bachelor-Arbeit soll das Minimum Viable Product (MVP) des Projekts erarbeitet werden, also 
 einer ersten lauffähigen Version mit den Kernfunktionen, die von der Nutzergruppe als unverzichtbar herausgearbeitet 
 wurden. Entsprechend liegt in der Anforderungskonzeptiond er Fokus auf den sogenannten "Must-Have"-Anforderungen,
@@ -12,22 +13,29 @@ Die durch interne Gespräche erfassten Nutzeranforderungen lassen sich in zwei K
 die funktionalen Anforderungen, die sich direkt auf die Interaktion mit der Anwendung beziehen. Ebenfalls wichtig sind jedoch auch
 nicht-funktionale Anforderungen, die sich auf Qualität, Sicherheit, Performance und Wartbarkeit der Lösung beziehen.
 \subsection{Funktionale Anforderungen}
-\footnote{Die beiden folgenden Abschnitte dienen mehr als Platzhalter als alles anderes. Ich habe zwar schon Informationen zu den Anforderungen, werden
-diese aber in den kommenden Wochen erst konkreter Ausformulieren}
-Im Rahmen des Minimum Viable Products (MVP) wurden folgende funktionale Anforderungen als wesentlich identifiziert. 
-Sie bilden die Grundlage für die Nutzung des Systems durch Fachanwendende ohne tiefgehendes technisches Vorwissen.
-\large{1. Anlegen neuer dynamischer Attribute}\break
+Im Rahmen des Minimum Viable Products (MVP) wurden folgende funktionale Anforderungen als unverzichtbar identifiziert. 
+Sie bilden die Grundlage für die Nutzung des Systems durch Fachanwendende ohne tiefgehendes technisches Vorwissen. 
+\begin{itemize}
+  \item \textbf{Anlegen neuer dynamischer Attribute:}  
 Nutzer*innen sollen die Möglichkeit haben, eigene Attribute anzulegen, die einem bestehenden Projektelement 
 (z. B. einer Formulierung oder einem Projekt) zugewiesen werden können. Hierbei müssen folgende Angaben möglich sein:
 
-Name des Attributs
+\begin{table}[h!]
+\centering
+\begin{tabular}{|l|c|}
+\hline
+\textbf{Angabe}         & \textbf{Pflichtfeld} \\
+\hline
+Name des Attributs      & Ja               \\
+Beschreibung            & Nein                 \\
+Datentyp (z. B. Text, Zahl, Datum) & Ja    \\
+\hline
+\end{tabular}
+\caption{Erforderliche Angaben beim Anlegen eines neuen Attributs}
+\end{table}
 
-Beschreibung (optional)
-
-Datentyp (z. B. Text, Zahl, Datum)
-
-\large{2. Zuweisung von Attributen zu konkreten Einträgen}\break
-Bereits definierte Attribute sollen spezifischen Datenbankeinträgen zugeordnet und mit Werten befüllt werden können. Dies umfasst:
+\item \textbf{Zuweisung von Attributen zu Datenobjekten:}  
+Bereits definierte Attribute sollen spezifischen Datenbankeinträgen zugeordnet und durch nutzerspezifische Werte ergänzt werden. Dies umfasst:
 
 Auswahl eines vorhandenen Attributs
 
@@ -35,49 +43,53 @@ Eingabe eines entsprechenden Werts
 
 Validierung des Werts entsprechend des Datentyps
 
-\large{3. Anzeige und Bearbeitung vorhandener Attribut-Werte}\break
+\item \textbf{Bearbeiten und Anzeigen von Attribut-Werten:}  
 Im Benutzerinterface sollen alle bereits zugewiesenen Attribute mitsamt ihren Werten für ein bestimmtes Projektelement angezeigt und editierbar sein. 
 Die Darstellung soll dynamisch erfolgen und sich an der Anzahl und Art der zugewiesenen Attribute orientieren.
 
-\large{4. Löschung von Attribut-Zuweisungen}\break
+\item \textbf{Löschen von Attribut-Zuweisungen:} 
 Nutzer*innen sollen die Möglichkeit haben, bestehende Attribut-Wert-Paare wieder zu entfernen, ohne dabei das globale Attribut selbst zu löschen. 
 Dadurch bleibt das Attribut für andere Einträge verfügbar.
 
-\large{5. Benutzerführung und Eingabeunterstützung}\break
+\item \textbf{Benutzerführung und Validierung:} 
 Die Oberfläche muss durch verständliche Beschriftungen, Platzhaltertexte, Tooltips oder andere visuelle Hinweise den Nutzer bei der Eingabe unterstützen. 
 Validierungsfehler sollen unmittelbar und verständlich angezeigt werden.
 \subsection{Nicht-Funktionale Anforderungen}
-Neben den funktionalen Anforderungen, die die direkten Systemfähigkeiten betreffen, wurden verschiedene nicht-funktionale Anforderungen identifiziert. Diese beschreiben die Qualitätsmerkmale des Systems und sind essenziell für den erfolgreichen Betrieb in einem unternehmenskritischen Umfeld wie dem von Bayer.
+Neben den funktionalen Anforderungen, die die direkten Systemfähigkeiten betreffen, wurden verschiedene nicht-funktionale Anforderungen identifiziert. Diese beschreiben die Qualitätsmerkmale des Systems und sind essenziell 
+für den erfolgreichen Betrieb in einem unternehmenskritischen Umfeld wie dem von Bayer.
 
-\large{1. Performance}\break
+\end{itemize}
+
+\begin{itemize}
+  \item \textbf{Performance:}
 Das System muss eine hohe Reaktionsgeschwindigkeit aufweisen, um eine flüssige Nutzererfahrung zu gewährleisten.
 
 Die Ladezeit für die Anzeige eines Projektelements inklusive dynamischer Felder soll unter 500 ms liegen (bei bis zu 20 zusätzlichen Attributen).
 
 Schreiboperationen (z. B. Hinzufügen eines Attribut-Werts) sollen ohne spürbare Verzögerung erfolgen.
 
-\large{2. Skalierbarkeit}\break
+\item \textbf{Skalierbarkeit:}
 Die Lösung soll so ausgelegt sein, dass sie mit wachsender Datenmenge und Nutzerzahl ohne grundlegende Umstrukturierung betrieben werden kann.
 
 Die Datenbankstruktur muss große Mengen an dynamischen Attribut-Werten performant verarbeiten können.
 
 Die Architektur (Frontend, Backend, Datenbank) muss eine horizontale Skalierung ermöglichen (z. B. API-Lastverteilung).
 
-\large{3. Datenintegrität und Validierung}\break
+\item \textbf{Datenintegrität:}
 Es muss sichergestellt werden, dass sämtliche gespeicherte Daten vollständig, korrekt und konsistent sind.
 
 Alle Eingaben durch die Nutzer:innen müssen auf Plausibilität und Formatkonformität geprüft werden.
 
 Die Datenbank muss durch Constraints und Foreign Keys inkonsistente Zustände verhindern.
 
-\large{4. Wartbarkeit} \break
+\item \textbf{Wartbarkeit:}
 Die Codebasis soll modular und verständlich strukturiert sein, sodass zukünftige Weiterentwicklungen oder Fehlerbehebungen effizient durchgeführt werden können.
 
 Der Quellcode muss dokumentiert sein (Kommentare, Readmes, API-Spezifikationen).
 
 Wiederverwendbare Komponenten und Services sollen sauber gekapselt sein.
 
-\large{5. Sicherheit} \break
+\item \textbf{Sicherheit:}
 Das System muss grundlegende Sicherheitsanforderungen erfüllen, um unberechtigte Zugriffe zu verhindern und sensible Daten zu schützen.
 
 Schreibende Aktionen (z. B. das Anlegen neuer Attribute) sollen nur autorisierten Nutzern erlaubt sein.
@@ -89,39 +101,39 @@ Die Benutzeroberfläche muss so gestaltet sein, dass auch nicht-technische Anwen
 
 Komplexe Prozesse wie das Anlegen neuer Felder sollen durch schrittweise geführte Dialoge unterstützt werden.
 
-Fehlerzustände (z. B. ungültige Eingaben) müssen klar und verständlich kommuniziert werden.
+Fehlerzustände (z. B. ungültige Eingaben) müssen klar und nachvollziehbar kommuniziert werden.
+
+\end{itemize}
 \subsection{Abgrenzung}
 Es ist zwingend notwendig, sich im Rahmen dieser Bachelorarbeit auf das MVP der Anwendung zu fokussieren, um eine abschließende
 Evaluation zu gewährleisten. Dementsprechend gibt es relevante Anforderungen an das fertige Produkt, die im Rahmen dieser Bachelorarbeit 
 nicht umgesetzt werden. All diese Anforderungen sollen im Folgenden der Vollständigkeit halber aufgeführt und begründet werden.\break
-\large{1. Rollen-System}\break
-Viele verschiedene Nutzer werden für ihre jeweiligen Vorhaben in dieser Anwendung Attribute anlegen, und diesen Werte zuweisen. Es ist durchaus denkbar,
-dass zu solchen Attributen auch unter anderem geheime Daten gehören werden. Dementsprechend ist es für das finale Produkt zwingend notwendig, unbefugten Zugriff
-auf eingetragene Daten zu verhindern. Dies wird über ein Rollen-System innerhalb der Datenbank geschehen, und ist in der Theorie bereits konzeptioniert. Vorerst werden
-Nutzer jedoch angewiesen, keine solcher Daten zu speichern, bis dieses System fertig implementiert ist, was vorraussichtlich erst nach Ende des Bearbeitungszeitraums dieser 
-Arbeit geschehen wird. Daher wird ein solches System in der Implementierung nicht beachtet.
+\begin{itemize}
+  \item \textbf{Rollen- und Berechtigungssystem:} 
+Viele verschiedene Nutzer werden für ihre jeweiligen Vorhaben in dieser Anwendung Attribute anlegen, und diesen Werte zuweisen. Da künftig auch vertrauliche Daten gespeichert 
+werden könnten, ist perspektivisch ein Berechtigungssystem erforderlich. Vorerst werden Nutzer jedoch angewiesen, keine solcher Daten zu speichern, bisdieses System fertig 
+implementiert ist, was vorraussichtlich erst nach Ende des Bearbeitungszeitraums dieser Arbeit geschehen wird. Daher wird ein solches System in der Implementierung nicht beachtet.
 
-\large{2. Internationalisierung der Oberfläche}\break
-Das fertige Produkt soll, wie auch in vielen anderen Anwendungen der Fall (bspw. SAP)\footnote{quelle bitte}, in vielen verschiedenen Sprachen verfügbar sein. 
+\item \textbf{Internationalisierung:} 
+Das fertige Produkt soll, wie auch in vielen anderen Anwendungen der Fall (bspw. SAP), in vielen verschiedenen Sprachen verfügbar sein. 
 Das soll erreicht werden, indem dynamische Language Files eingesetzt werden, die auch eigens von Nutzern bereitgestellt werden können. Eine solche Implementation 
 ist jedoch zeitaufwendig und aufgrund der Sprachkenntnisse der Nutzer nicht von elementarer Wichtigkeit, wird deshalb in dieser Arbeit keine Verwendung finden.\break
-\large{3. Keine Integration in bestehende interne Systeme}\break
+\item \textbf{Integration in andere Systeme:} 
 Das Projekt soll zwar publiziert werden, insbesondere um Nutzer-Rückmeldungen erhalten zu können, jedoch soll es noch nicht in die restliche IT-Landschaft integriert werden,
 da das über lange Zeit und unter großer Vorsicht geschehen muss, um Kompatibilität zu garantieren.
 
-außer diesen Anforderungen existieren mehrere Erfolgskriterien, die für das Gelingen dieses Projekts elementar wichtig sind. Diese sollen im Folgenden
-herausgearbeitet werden.
-\subsection{Erfolgskriterien}
+Zusätzlich zu den hier aufgeführten Anforderungen wurden Erfolgskriterien definiert, anhand derer die Zielerreichung in Kapitel 4 überprüft wird.
+\end{itemize}
+\section{Erfolgskriterien und Evaluation}
 In erster Linie gilt das Projekt als gescheitert, sollten die funktionalen und nicht-funktionalen Kriterien nicht erfüllt sein. 
 Demnach ist es zwingend erforderlich, dass Nutzer die Anwendung zweckgemäß nutzen können, sowohl in Anbetracht der Funktionalität, als auch 
 der Performanz. Um diese Kriterien in der Evaluation bewerten zu können, werden im Folgenden (soweit möglich) KPIs (Key Performance Indicators) definiert.
 \subsubsection{Funktionale Zielerreichung}
 Hierfür soll in erster Linie ein Abgleich zwischen den durch die Nutzer gestellten Anforderungen und der Anwendung durchgeführt werden. Die Anwendung hat
-alle definierten "Must-Have"-Anforderungen zu erfüllen. Zudem sollen Nutzerinterviews geführt werden\footnote{rausstreichen wenn kb drauf}, um die Nutzerakzeptanz 
-zu messen, und somit die Zweckmäßigkeit der Benutzeroberfläche zu evaluieren.
-\subsubsection{Nicht-Funktionale Anforderungen}
+alle definierten "Must-Have"-Anforderungen zu erfüllen. 
+\subsubsection{Nicht-Funktionale Zielerreichung}
 Bei durchschnittlicher Nutzung sollte sich die Response-Time der Anwendung in verhältnismäßigen Bereichen bewegen. Diese sind unabhängig vom Endgerät des Nutzers, da es
-sich um eine Cloud-Applikation handelt, und sollten 2 Sekunden nicht überschreiten \footnote{Hier ABgleich mit anderen Systemen für Vergleichbarkeit. Außerdem Gespräche mit Joerg maybe, um das herauszuarbeiten, auch it nuzern?}
+sich um eine Cloud-Applikation handelt, und sollten 2 Sekunden nicht überschreiten.
 \subsubsection{Zukunftstauglichkeit und Wartbarkeit}
 Zusätzlich zu der imminenten Funktionalität des Programms muss gewährleistet sein, dass die Instandhaltung, sowie eventuelle Erweiterungen der Anwendung in Zukunft möglich sind.
 Hierfür ist es wichtig, dass die Codebasis modular und verständlich strukturiert ist, was durch eine saubere Trennung von Frontend und Backend, sowie durch die Verwendung von Frameworks, die eine klare Struktur vorgeben erreicht wird.
