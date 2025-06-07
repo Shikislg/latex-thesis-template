@@ -1,37 +1,100 @@
 %!TEX root = ../Thesis.tex
-\section{Evaluierung}
-Im Folgenden soll die Anwendung auf Basis der zuvor definierten Ziele evaluiert werden. Dabei soll zuerst die Einhaltung der funktionalen,
-und daraufhin die der nicht-funktionalen Ziele bewertet werden.\footnote{Ich arbeite momentan an einer ordentlichen wissenschaftlichen Evaluierung mit KPIs, das hier ist nur eine erste grobe Einschätzung.}
+\section{Evaluation}
+Im vorherigen Kapitel wurde die Umsetzung des Frontends der Anwendung beschrieben. Dabei wurde der Fokus auf die Möglichkeit gelegt, dynamische Attribute 
+zu erstellen, zuzuordnen und zu verwalten, ohne dabei die feste Datenbankstruktur der ursprünglichen Tabelle verändern zu müssen.
+
+Im Folgenden soll geprüft werden, ob die zuvor definierten funktionalen Anforderungen (\ref*{chapter:3}) vollständig umgesetzt werden konnten, und ob das System 
+letztendlich den praktischen Nutzen bringt, der von den Auftraggebenden erwartet wird. 
+
+Im Fokus steht dabei nicht die Auswertung technischer Metriken, sondern die Frage, die für die Nutzer am relevantesten ist: 
+Funktioniert die Anwendung in der alltäglichen Nutzung so, wie es gedacht ist?
+
+Dafür wird zuerst ein Abgleich mit den Anforderungen getätigt, wonach bewertet wird, wie sich die Anwendung in typischen Szenarien verhält.
+Abschließend folgt eine Einschätzung, inwieweit die Anwendung wartbar und erweiterbar ist.
 \subsection{Funktionale Zielerreichung}
-Die funktionale Zielerreichung ist anhand der Erfüllung der Must-Have-Anforderungen zu bewerten. Diese sind in der folgenden Tabelle zusammengefasst:
-\begin{table}[H]
-    \centering
-    \caption{Funktionale Zielerreichung}
-    \label{tab:funktionaleZielerreichung}
-    \begin{tabular}{|p{0.2\textwidth}|p{0.6\textwidth}|p{0.1\textwidth}|}
-        \hline
-        \textbf{Anforderung} & \textbf{Beschreibung} & \textbf{Erfüllt} \\ \hline
-        Anlegen neuer dynamischer Attribute & Nutzer*innen können neue Attribute anlegen, die einem Projektelement zugewiesen werden können. & Ja \\ \hline
-        Zuweisung von Attributen zu konkreten Einträgen & Bereits definierte Attribute können spezifischen Datenbankeinträgen zugeordnet und mit Werten befüllt werden. & Ja \\ \hline
-        Anzeige und Bearbeitung vorhandener Attribut-Werte & Alle zugewiesenen Attribute mitsamt ihren Werten für ein Projektelement werden angezeigt und sind editierbar. & Ja \\ \hline
-        Löschung von Attribut-Zuweisungen & Bestehende Attribut-Wert-Paare können entfernt werden, ohne das globale Attribut zu löschen. & Ja \\ \hline
-        Benutzerführung und Eingabeunterstützung & Die Oberfläche bietet verständliche Beschriftungen, Platzhaltertexte und Tooltips zur Unterstützung der Nutzer. & Ja \\ \hline
-    \end{tabular}
-\end{table}
-Von einem funktionalen Standpunkt sind die Ziele vollständig erreicht. Alle definierten Must-Have-Anforderungen sind implementiert und funktionieren wie vorgesehen.
-\subsection{Nicht-funktionale Zielerreichung}
-Die nicht-funktionale Zielerreichung ist anhand der Response-Time und der Zukunftstauglichkeit der Anwendung zu bewerten. Diese sind in der folgenden Tabelle zusammengefasst:
-\begin{table}[H]
-    \centering
-    \caption{Nicht-funktionale Zielerreichung}
-    \label{tab:nichtfunktionaleZielerreichung}
-    \begin{tabular}{|p{0.2\textwidth}|p{0.6\textwidth}|p{0.1\textwidth}|}
-        \hline
-        \textbf{Anforderung} & \textbf{Beschreibung} & \textbf{Erfüllt} \\ \hline
-        Performance & Ladezeit für die Anzeige eines Projektelements inklusive dynamischer Felder liegt unter 2000 ms. & Ja \\ \hline
-        Skalierbarkeit & Die Lösung ist so ausgelegt, dass sie mit wachsender Datenmenge und Nutzerzahl ohne grundlegende Umstrukturierung betrieben werden kann. & Ja \\ \hline
-        Datenintegrität und Validierung & Alle Eingaben werden auf Plausibilität und Formatkonformität geprüft, um konsistente Daten zu gewährleisten. & Ja \\ \hline
-        Wartbarkeit & Der Quellcode ist modular strukturiert und dokumentiert, um zukünftige Weiterentwicklungen zu erleichtern. & Ja \\ \hline
-    \end{tabular}
-\end{table}
-Die nicht-funktionalen Ziele sind ebenfalls vollständig erreicht. Die Anwendung reagiert schnell und ist so aufgebaut, dass sie auch bei wachsender Nutzerzahl und Datenmenge performant bleibt. Die Datenintegrität wird durch Validierungen sichergestellt, und der Quellcode ist modular und gut dokumentiert.
+Die Planung und Umsetzung der Anwendung basiert auf den in Kapitel 3.2 definierten \enquote{Must-Have}-Anforderungen. Alle für die Anwendung zentralen 
+Funktionen wurden implementiert und erfolgreich getestet:
+Zur Bewertung der funktionalen Zielerreichung werden drei KPIs verwendet, durch welche zentrale Interaktionen abgebildet werden:
+\begin{itemize}
+    \item \textbf{Attributerstellung:} Ein Nutzer ist in der Lage, Attribute mit Titel, Beschreibung und Typ zu erstellen. Die dafür bereitgestellten 
+    Eingabefelder werden dynamisch validiert, sodass nur gültige Eingaben möglich sind.
+    \item \textbf{Zuweisung und Eingabe:} Attribute sind spezifischen Tabellen zuweisbar, und Werte eines Attributs können unter Berücksichtigung des Kontexts 
+    erfasst werden.
+    \item \textbf{Löschung:} Einzelne Werte (solange noch weitere vorhanden sind) können gelöscht werden, ohne das Attribut selbst entfernen zu müssen.
+    Attribute können vollständig gelöscht werden, ohne die referentielle Integrität der Datenbank zu gefährden.
+    \item \textbf{Benutzerführung:} Das User Interface bietet im Hintergrund Validierung, bei Bedarf Fehleranzeigen und Ladezustände für alle Interaktionen,
+    um eine intuitive Nutzererfahrung zu gewährleisten.
+\end{itemize}
+
+Die Anwendung erfüllt den funktionalen Zweck, für den sie konzipiert wurde, vollumfänglich. Eine Bedienung der Anwendung ist auch ohne technische Vorkenntnisse
+über dynamische Attribute möglich.
+
+\subsection{Reaktion auf typische Nutzungsszenarien}
+Im Rahmen des Testbetriebs wurde das System mehreren Standard-Szenarien unterzogen:
+\begin{itemize}
+    \item Erstellung eines neuen Attributs mit anschließendem Wertimport
+    \item Bearbeiten eines bestehenden Werts mit falschem Format
+    \item Zeitgleiches Editieren mehrerer Einträge
+    \item Netzwerkunterbrechung während einer Operation
+\end{itemize}
+
+Alle Szenarien wurden durch die Anwendung korrekt abgefangen: Fehler wurden, wenn gegeben, angezeigt, Nutzerinteraktionen wurden sauber zurückgerollt oder blockiert,
+und Ladezustände wurden angezeigt.
+
+Die Anwendung verhält sich damit auch unter erschwerten Bedingungen robust und transparent.
+\subsection{Leistungsfähigkeit der API}
+Alle zentralen Funktionen der Anwendung basieren auf API-Anfragen, weshalb die Leistungsfähigkeit der API elementar für die Leistungsfähigkeit der Anwendung ist.
+Dies steht insbesondere im Fokus, da die Leistungsfähigkeit einiger Endgeräte der nutzenden Personen stark eingeschränkt ist, wodurch die Antwortzeiten der API-Anfragen 
+direkt die Nutzererfahrung beeinflussen. 
+Die Leistungsfähigkeit soll anhand von vier KPIs bewertet werden:
+\begin{itemize}
+    \item \textbf{Median-Response-Time:} Die Zeit in Millisekunden, die vom API-Aufruf bis zur Antwort verstreicht, soll unter 500ms liegen.
+    \item \textbf{Durchsatzrate:} Die Anzahl API-Requests, die stabil verarbeitet werden können, soll nach Möglichkeit doppelt so hoch sein wie die erwartete maximale Last. 
+    Diese umfasst in der momentanen Planung 20 Anfragen pro Sekunde \footnote{2 Requests pro Sekunde pro Nutzer, 10 Key User sind eingeplant}.
+    \item \textbf{Fehlerquote unter Last:} Die Fehlerquote der API bei 100 Requests soll unter 5\% liegen.
+    \item \textbf{Datenbank-Roundtrips pro Anfrage:} Eine API-Anfrage soll nicht mehr als 2 Queries an die Datenbank stellen.
+\end{itemize}
+Im Folgenden wird die Erfüllung dieser KPIs untersucht, beginnend mit der Median-Response-Time.
+\subsubsection{Median-Response-Time}
+Um die Median-Response-Time zu messen, wurde eines der API-Requests, welches regelmäßig aufgerufen wird, mit einer Zeitmessung ausgestattet.
+Dafür wurde vor und nach dem Request die aktuelle Zeit abgerufen, und die Differenz als Response-Time ausgegeben.
+\begin{figure}[H]
+    \begin{lstlisting}[caption=Median Response Time Testing, breaklines = true, label=list:responseTimeTest]
+        const start = performance.now();
+        try{
+            const result = await callApi('/projects/fetchProject/{projectId}');
+            const end = performance.now();
+
+            console.log(' Response Time: ${Math.round(end - start)} ms');
+            .
+            .
+            .
+        }
+    \end{lstlisting}
+\end{figure}
+Das Ergebnis der Messung ist in Abbildung \ref{fig:responseTime} zu sehen. Die Messung wurde über 1000 Anfragen durchgeführt, um repräsentative Werte 
+garantieren zu können. Im Schnitt liegt dabei die Response-Time bei 122ms, was deutlich unter der angestrebten Grenze von 500ms liegt. Da die Datenbank noch 
+vergleichsweise klein ist, ist eine Abweichung nach oben in Zukunft zu erwarten, jedoch sollte die Grenze von 500ms auch bei einer größeren Datenbank nicht überschritten werden.
+\subsubsection{Durchsatzrate}
+Die Durchsatzrate wurde getestet, indem manuell 1000 Anfragen an die API in schneller Sukzession gesendet wurden. Dabei wurde die Fehlerrate, Gesamtzeit und die Anzahl 
+der Anfragen, die pro Sekunde verarbeitet wurden, gemessen. Die Ergebnisse sind in Abbildung \ref{fig:throughput} zu sehen. Die Durchsatzrate liegt bei 7.29 Requests pro Sekunde,
+und liegt somit deutlich unter dem Zielwert von 20 Requests pro Sekunde. In Zukunft muss also die Durchsatzrate der API erhöht werden, um die prognostizierte Last effizient zu bewältigen.
+\subsubsection{Fehlerquote unter Last}
+Die Fehlerquote unter Last wurde ebenfalls im Rahmen des Tests der Durchsatzrate gemessen. Dabei wurde die Anzahl der fehlerhaft beantworteten Anfragen gezählt, woraus eine Fehlerquote 
+berechnet wurde. Die Ergebnisse sind in Abbildung \ref{fig:errorRate} zu sehen. Die Fehlerquote liegt mit 0\% deutlich unter der angestrebten Grenze von 5\%.
+\subsubsection{Fazit zur Leistungsfähigkeit der API}
+Die Leistungsfähigkeit der API ist insgesamt als ausreichend zu bewerten. Zwar liegt die Durchsatzrate unter dem angestrebten Zielwert, da dieser jedoch stark über der maximal erwartbaren Last liegt,
+ist die API dennoch in der Lage, die erwartbare Last zu bewältigen. Alle weiteren Metriken liegen deutlich im Rahmen der angestrebten Werte. Um die API vollständig zukunftssicher zu gestalten,
+muss die Durchsatzrate jedoch erhöht werden. Dies kann hauptsächlich durch Caching von häufig angefragten Daten erreicht werden, um die Anzahl der Datenbankabfragen zu reduzieren.
+\subsection{Wartbarkeit und Erweiterbarkeit der Anwendung}
+Die Frontend-Architektur ist modular aufgebaut, wodurch sauber zwischen Logik, Darstellung und API-Kommunikation getrennt werden kann.
+Neue Komponenten lassen sich mit vertretbarem Aufwand ergänzen, ohne neue Fehler in bestehenden Komponenten zu verursachen.
+
+Die Kommunikation im Backend erfolgt über eine gekapselte Service-Schicht, die leicht angepasst oder erweitert werden kann, sollte sich die Struktur der 
+API verändern. Grundlegende Strukturen müssen demnach nicht angepasst werden, um das System zu erweitern.
+
+Auch die Datenbankstruktur ermöglicht eine schrittweise Erweiterung, unter anderem über die Spezifikations-Tabelle, die eine hohe Flexibilität für die Informationen ,
+die über Attribute gespeichert werden können, bietet. 
+\subsection{Zusammenfassung der Evaluation}
+Die Anwendung erfüllt sowohl die funktionalen als auch technischen Anforderungen vollumfänglich. Sie ist stabil im Betrieb, auch für nicht-technische Nutzer
+nachvollziehbar und lässt sich technisch gut warten und erweitern. Die Zielsetzung der Arbeit - ein erweiterbares Framework zur dynaamischen Attributverwaltung - wurde somit erreicht.

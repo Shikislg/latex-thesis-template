@@ -1,9 +1,21 @@
 %!TEX root = ../Thesis.tex
 \section{Fazit}
-Im Rahmen dieser Bachelor-Arbeit wurde, basierend auf den definierten Anforderungen und Zielen, ein flexibles Framework aufgebaut, welches in Zukunft 
-eine Vielzahl verschiedener Anwendungen auf Basis des unterstützten Datenstamms ermöglicht. Für die speziell angeforderte Anwendung konnte ein MVP erstellt werden, 
-der in den kommenden Monaten verbessert und erweitert werden kann. Die Implementierung der dynamischen Attribute ermöglicht es,
-dass Nutzer*innen ihre Projektelemente flexibel anpassen können, ohne dass dafür eine neue Datenbankstruktur entworfen werden muss. In Zukunft wird das Framework 
-ermöglichen, das Bayer-Portfolio um viele weitere Funktionalitäten zu erweitern, mit denen die Produktivität der Division erheblich gesteigert werden kann. Insgesamt
-leistet das Ergebnis der Arbeit einen praktischen Beitrag zur Selbstständigkeit von Fachabteilungen bei der Datenverarbeitung und legt das Fundament für zukünftige 
-Fortschritte in der Softwareentwicklung bei Bayer.
+Im Rahmen dieser Bachelor-Arbeit sollte ein technisches Framework entwickelt werden, mit welchem es möglich ist, benutzerspezifische Informationen 
+dynamisch zu bestehenden Datensätzen zu speichern, ohne die zugrunde liegende Datenstruktur anpassen zu müssen.
+
+Im Zentrum stand dabei die Frage, inwieweit diese Flexibilität einen Einschnitt in die Integrität der Daten, die Benutzerfreundlichkeit und Wartbarkeit 
+des Systems darstellt. Die Ergebnisse der Arbeit zeigen, dass eine solche Lösung technisch realisierbar und im praktischen Betrieb stabil einsetzbar ist.
+
+Sowohl das Datenmodell als auch das Frontend wurden so konzipiert, dass Erweiterungen möglich sind, ohne dabei bestehende Strukturen verändern zu müssen.
+Der modulare Aufbau der Anwendung ermöglicht es, neue Komponenten mit überschaubarem Aufwand zu integrieren.
+Besonderer Fokus lag auf einer klaren Trennung zwischen API-Kommunikation, Benutzeroberfläche und der Geschäftslogik - wodurch die Wartbarkeit 
+langfristig gesichert wird. 
+
+In der Evaluation konnte gezeigt werden, dass alle funktionalen Kernanforderungen erfüllt wurden. 
+Auch unter Last und nicht-idealen Bedingungen (z. B. langsamer Verbindung oder inkorrekter Nutzereingaben) zeigt sich die Anwendung robus und nutzbar.
+
+Trotzdem bleiben weiterhin offene Punkte: Die Durchsatzrate der API ist noch nicht ausreichend, um die prognostizierte maximale Last vollständig zu bewältigen.
+Darüber hiknaus ist langfristig ein Rollen- und Rechtesystem erforderlich, um den Schutz sensibler Daten zu gewährleisten.
+
+Insgesamt zeigt diese Arbeit, dass dynamische Erweiterbarkeit und technische Robustheit kein WIderspruch sein müssen, solange Struktur, Validierung und Nutzerführung
+in der Architektur von Beginn an berücksichtigt werden.

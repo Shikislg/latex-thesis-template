@@ -1,25 +1,21 @@
 %!TEX root = ../Thesis.tex
 \section{Einleitung}
-Relationale Datenbanken sind weiterhin die Standardlösung für die Speicherung und Verarbeitung betrieblicher Daten in Unternehmen. \footnote{https://arxiv.org/abs/2301.00847}
-Durch ihre rigide Struktur \footnote{\url{https://rebelsky.cs.grinnell.edu/Courses/CS302/2007S/Readings/codd-1970.pdf?utm_source=chatgpt.com}} ermöglichen sie eine klare Trennung zwischen Datenstruktur und Anwendungsebene, 
-wodurch eine hohe Datenintegrität sichergestellt wird. Diese rigide Struktur kann jedoch auch zu Einschränkungen führen, insbesondere wenn Tabellen in Laufzeit erweitert werden müssten, um 
-eine flexible und nutzerspezifische Erweiterung zu ermöglichen. 
+Relationale Datenbanken sind weiterhin die Standardlösung für die Speicherung und Verarbeitung betrieblicher Daten in Unternehmen \footcite{Prasad2025}.  
+Durch ihre rigide Struktur ermöglichen sie eine klare Trennung zwischen Datenstruktur und Anwendungsebene, wodurch eine hohe Datenintegrität sichergestellt wird \footcite{Codd1970}; \footcite{Date2003}.  
+Diese rigide Struktur kann jedoch auch zu Einschränkungen führen, insbesondere wenn Tabellen zur Laufzeit erweitert werden müssten, um eine flexible und nutzerspezifische Erweiterung zu ermöglichen \footcite{Nadkarni2001}.
 
-Auch im betrieblichen Ablauf der Bayer AG sind relationale Datenbanken, mitsamt ihrer Einschränkungen, allgegenwärtig. 
-Dies gilt insbesondere für Abteilungen, die für Research and Development (R\&D) zuständig sind. Alle Projekte,
-die im Rahmen von Forschungsaktivitäten durchgeführt werden, werden mitsamt zusätzlicher Attribute in einer Datenbank (Newport) 
-hinterlegt, wodurch Budgetierung und Projekt-Planung effizient und effektiv möglich ist. Zwar besteht die Möglichkeit,
-dort viele Informationen zu hinterlegen, jedoch lassen sich die vorgegebenen Spalten nicht erweitern. Dadurch ist es 
-nicht möglich, benutzerspezifische Informationen, die über den Horizont von Newport hinausgehen, zu speichern und weiterzuverarbeiten.
-Um dieses Problem zu lösen, soll eine Benutzeroberfläche entwickelt werden, die diese Speicherung ermöglicht. 
+Auch im betrieblichen Ablauf der Bayer AG sind relationale Datenbanken mitsamt ihrer Einschränkungen allgegenwärtig.  
+Dies gilt insbesondere für Abteilungen, die für Research and Development (R\&D) zuständig sind.  
+Alle Projekte, die im Rahmen von Forschungsaktivitäten durchgeführt werden, werden mitsamt zusätzlicher Attribute in einer Datenbank (Newport) hinterlegt, wodurch Budgetierung und Projekt-Planung effizient und effektiv möglich ist.  
+Zwar besteht die Möglichkeit, dort viele Informationen zu hinterlegen, jedoch lassen sich die vorgegebenen Spalten nicht erweitern.  
+Dadurch ist es nicht möglich, benutzerspezifische Informationen, die über den Horizont von Newport hinausgehen, zu speichern und weiterzuverarbeiten.  
+Um dieses Problem zu lösen, soll eine Benutzeroberfläche entwickelt werden, die diese Speicherung ermöglicht.
 
-Im Rahmen dieser Bachelor-Arbeit soll ein flexibles technisches Framework konzipiert und umgesetzt werden, mit welchem 
-benutzerspezifische Attribut-Erweiterungen ermöglicht werden, ohne die bestehende Datenbankstruktur der Newport-Datenbank zu verändern.
+Im Rahmen dieser Bachelor-Arbeit soll ein flexibles technisches Framework konzipiert und umgesetzt werden, mit welchem benutzerspezifische Attribut-Erweiterungen ermöglicht werden, ohne die bestehende Datenbankstruktur der Newport-Datenbank zu verändern.  
 Dabei soll untersucht werden, wie sich die eingeführte Flexibilität mit den Anforderungen an Datenintegrität und Benutzerfreundlichkeit vereinbaren lassen.
 
-Die Arbeit gliedert sich in folgende Kapitel: Zuerst sollen in Kapitel 2 wichtige grundlegende Konzepte und Begriffe rund um relationale Datenbanken 
-und flexible Datenmodellierung erläutert werden. Daraufhin werden die Anforderungen an das zu entwickelnde Framework, sowie die Zielsetzung für das Projekt 
-definiert werden. Die folgenden Kapitel widmen sich der technischen Konzeption und Implementierung des Front- und Backends, sowie einer abschließenden Evaluation 
-der Ergebnisse. Abschließend folgt ein Ausblick auf mögliche zukünftige Entwicklungen gegeben.
-
-
+Die Arbeit gliedert sich in folgende Kapitel:  
+Zuerst sollen in Kapitel 2 wichtige grundlegende Konzepte und Begriffe rund um relationale Datenbanken und flexible Datenmodellierung erläutert werden.  
+Daraufhin werden die Anforderungen an das zu entwickelnde Framework sowie die Zielsetzung für das Projekt definiert.  
+Die folgenden Kapitel widmen sich der technischen Konzeption und Implementierung des Front- und Backends sowie einer abschließenden Evaluation der Ergebnisse.  
+Abschließend folgt ein Ausblick auf mögliche zukünftige Entwicklungen.
